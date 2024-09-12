@@ -1,0 +1,43 @@
+{
+  "name": "eson-highlight",
+  "displayName": "eson-highlight",
+  "description": "Only the syntax highlighting capability of Json5, decoration, expression and function call has been implemented for now.",
+  "version": "0.0.2",
+  "icon": "icon.png",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "engines": {
+    "vscode": "^1.92.0"
+  },
+  "publisher": "esonlang",
+  "categories": [
+    "Programming Languages",
+    "Formatters"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "eson",
+        "aliases": [
+          "eson",
+          "esonlang"
+        ],
+        "extensions": [
+          "eson",
+          "json",
+          "json5"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "eson",
+        "scopeName": "source.eson",
+        "path": "./syntaxes/eson.tmLanguage.json"
+      }
+    ]
+  }
+}

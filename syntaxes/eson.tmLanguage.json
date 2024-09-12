@@ -1,0 +1,337 @@
+{
+	"scopeName": "source.eson",
+	"fileTypes": [
+		"eson",
+		"json"
+	],
+	"name": "eson",
+	"patterns": [
+		{
+			"include": "#decorations"
+		},
+		{
+			"include": "#comments"
+		},
+		{
+			"include": "#value"
+		}
+	],
+	"repository": {
+		"expression": {
+			"patterns": [
+				{
+					"include": "#value"
+				},
+				{
+					"include": "#arithmetic_operator"
+				},
+				{
+					"include": "#ternary_operator"
+				}
+			]
+		},
+		"arithmetic_operator": {
+			"patterns": [
+				{
+					"name": "keyword.operator.arithmetic.expression",
+					"match": "[+\\-*/]"
+				}
+			]
+		},
+		"ternary_operator": {
+			"patterns": [
+				{
+					"name": "keyword.operator.ternary.expression",
+					"match": "[?:]"
+				}
+			]
+		},
+		"decorations": {
+			"patterns": [
+				{
+					"name": "meta.decoration.eson",
+					"begin": "@",
+					"beginCaptures": {
+						"0": {
+							"name": "entity.name.tag.eson"
+						}
+					},
+					"end": "\\n",
+					"patterns": [
+						{
+							"include": "#function-call"
+						},
+						{
+							"match": "\\w+",
+							"name": "entity.name.tag.eson"
+						}
+					]
+				}
+			]
+		},
+		"comments": {
+			"patterns": [
+				{
+					"match": "/{2}.*",
+					"name": "comment.single.eson"
+				},
+				{
+					"begin": "/\\*\\*(?!/)",
+					"captures": {
+						"0": {
+							"name": "punctuation.definition.comment.eson"
+						}
+					},
+					"end": "\\*/",
+					"name": "comment.block.documentation.eson"
+				},
+				{
+					"begin": "/\\*",
+					"captures": {
+						"0": {
+							"name": "punctuation.definition.comment.eson"
+						}
+					},
+					"end": "\\*/",
+					"name": "comment.block.eson"
+				}
+			]
+		},
+		"value": {
+			"comment": "the 'value' diagram at http://json.org",
+			"patterns": [
+				{
+					"include": "#constant"
+				},
+				{
+					"include": "#infinity"
+				},
+				{
+					"include": "#number"
+				},
+				{
+					"include": "#stringSingle"
+				},
+				{
+					"include": "#stringDouble"
+				},
+				{
+					"include": "#array"
+				},
+				{
+					"include": "#object"
+				},
+				{
+					"include": "#function-call"
+				}
+			]
+		},
+		"function-call": {
+			"name": "meta.function-call.eson",
+			"begin": "\\b([a-zA-Z_][a-zA-Z0-9_]*)\\s*\\(",
+			"beginCaptures": {
+				"1": {
+					"name": "entity.name.tag.eson"
+				}
+			},
+			"end": "\\)",
+			"patterns": [
+				{
+					"include": "#function-parameters"
+				}
+			]
+		},
+		"function-parameters": {
+			"patterns": [
+				{
+					"include": "#value"
+				},
+				{
+					"include": "#expression"
+				},
+				{
+					"match": ",",
+					"name": "punctuation.separator.parameter.eson"
+				}
+			]
+		},
+		"array": {
+			"begin": "\\[",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.definition.array.begin.eson"
+				}
+			},
+			"end": "\\]",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.definition.array.end.eson"
+				}
+			},
+			"name": "meta.structure.array.eson",
+			"patterns": [
+				{
+					"include": "#comments"
+				},
+				{
+					"include": "#decorations"
+				},
+				{
+					"include": "#value"
+				},
+				{
+					"match": ",",
+					"name": "punctuation.separator.array.eson"
+				},
+				{
+					"match": "[^\\s\\]]",
+					"name": "invalid.illegal.expected-array-separator.eson"
+				}
+			]
+		},
+		"constant": {
+			"match": "\\b(?:true|false|null|Infinity|NaN)\\b",
+			"name": "constant.language.eson"
+		},
+		"infinity": {
+			"match": "(-)*\\b(?:Infinity|NaN)\\b",
+			"name": "constant.language.eson"
+		},
+		"number": {
+			"patterns": [
+				{
+					"comment": "handles hexadecimal numbers",
+					"match": "(0x)[0-9a-fA-f]*",
+					"name": "constant.hex.numeric.eson"
+				},
+				{
+					"comment": "handles integer and decimal numbers",
+					"match": "[+-.]?(?=[1-9]|0(?!\\d))\\d+(\\.\\d+)?([eE][+-]?\\d+)?",
+					"name": "constant.dec.numeric.eson"
+				}
+			]
+		},
+		"object": {
+			"begin": "\\{",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.definition.dictionary.begin.eson"
+				}
+			},
+			"comment": "a eson object",
+			"end": "\\}",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.definition.dictionary.end.eson"
+				}
+			},
+			"name": "meta.structure.dictionary.eson",
+			"patterns": [
+				{
+					"include": "#comments"
+				},
+				{
+					"include": "#decorations"
+				},
+				{
+					"comment": "the eson object key",
+					"include": "#key"
+				},
+				{
+					"begin": ":",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.separator.dictionary.key-value.eson"
+						}
+					},
+					"end": "(,)|(?=\\})",
+					"endCaptures": {
+						"1": {
+							"name": "punctuation.separator.dictionary.pair.eson"
+						}
+					},
+					"name": "meta.structure.dictionary.value.eson",
+					"patterns": [
+						{
+							"comment": "the eson object value",
+							"include": "#value"
+						},
+						{
+							"match": "[^\\s,]",
+							"name": "invalid.illegal.expected-dictionary-separator.eson"
+						}
+					]
+				},
+				{
+					"match": "[^\\s\\}]",
+					"name": "invalid.illegal.expected-dictionary-separator.eson"
+				}
+			]
+		},
+		"stringSingle": {
+			"begin": "[']",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.definition.string.begin.eson"
+				}
+			},
+			"end": "[']",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.definition.string.end.eson"
+				}
+			},
+			"name": "string.quoted.eson",
+			"patterns": [
+				{
+					"match": "(?x:                # turn on extended mode\n                     \\\\                # a literal backslash\n                     (?:               # ...followed by...\n                       [\"\\\\/bfnrt]     # one of these characters\n                       |               # ...or...\n                       u               # a u\n                       [0-9a-fA-F]{4}  # and four hex digits\n                     )\n                   )",
+					"name": "constant.character.escape.eson"
+				},
+				{
+					"match": "\\\\.",
+					"name": "invalid.illegal.unrecognized-string-escape.eson"
+				}
+			]
+		},
+		"stringDouble": {
+			"begin": "[\"]",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.definition.string.begin.eson"
+				}
+			},
+			"end": "[\"]",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.definition.string.end.eson"
+				}
+			},
+			"name": "string.quoted.eson",
+			"patterns": [
+				{
+					"match": "(?x:                # turn on extended mode\n                     \\\\                # a literal backslash\n                     (?:               # ...followed by...\n                       [\"\\\\/bfnrt]     # one of these characters\n                       |               # ...or...\n                       u               # a u\n                       [0-9a-fA-F]{4}  # and four hex digits\n                     )\n                   )",
+					"name": "constant.character.escape.eson"
+				},
+				{
+					"match": "\\\\.",
+					"name": "invalid.illegal.unrecognized-string-escape.eson"
+				}
+			]
+		},
+		"key": {
+			"name": "string.key.eson",
+			"patterns": [
+				{
+					"include": "#stringSingle"
+				},
+				{
+					"include": "#stringDouble"
+				},
+				{
+					"match": "[a-zA-Z0-9_-]",
+					"name": "string.key.eson"
+				}
+			]
+		}
+	}
+}
